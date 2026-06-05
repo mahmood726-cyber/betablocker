@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>BetaBlockerSynth V2.3: Publication Candidate</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- fonts removed for offline use -->
   <style>
     :root {
       --bg-dark: #0f172a;
@@ -469,6 +469,7 @@
   }
 </script>
 
+<script src="engine.js"></script>
 <script>
   // --- DEFAULT DATA (NEJM 2024/2025 Estimations) ---
   const DEFAULT_DATA = [
@@ -479,23 +480,8 @@
     { id: 'CAPITAL', name: 'CAPITAL-RCT', n: 190, eventsTx: 10, eventsCtl: 11, weight: 2 }
   ];
 
-  function calculateStats(t) {
-    const nTx = Math.floor(t.n / 2); 
-    const nCtl = Math.ceil(t.n / 2);
-    
-    const riskTx = t.eventsTx / nTx;
-    const riskCtl = t.eventsCtl / nCtl;
-    
-    const safeTx = t.eventsTx === 0 ? 0.5 : t.eventsTx;
-    const safeCtl = t.eventsCtl === 0 ? 0.5 : t.eventsCtl;
-    
-    const rr = (safeTx/nTx) / (safeCtl/nCtl);
-    const logHR = Math.log(rr);
-    
-    const v = (1/safeTx) - (1/nTx) + (1/safeCtl) - (1/nCtl);
-    
-    return { ...t, logHR, varLogHR: v };
-  }
+  // calculateStats(t) is defined in engine.js (single source of truth) and is a
+  // browser global here via <script src="engine.js">.
 
   let appState = {
     trials: JSON.parse(JSON.stringify(DEFAULT_DATA)).map(calculateStats),
